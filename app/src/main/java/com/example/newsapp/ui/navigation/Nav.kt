@@ -28,6 +28,8 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.example.newsapp.ui.screen.NewsScreen
+import com.example.newsapp.ui.screen.NewsScreenRoute
 import com.example.newsapp.ui.screen.Screens
 
 @Composable
@@ -76,7 +78,7 @@ fun NavGraph(navController: NavHostController) {
         startDestination = "news"
     ) {
         composable(route = Screens.Home.route) {
-
+            NewsScreenRoute(navigateToDetail = {})
         }
         composable(route = Screens.Favorites.route) {
 
