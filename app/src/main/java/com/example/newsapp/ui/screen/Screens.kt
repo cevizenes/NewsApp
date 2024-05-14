@@ -11,7 +11,7 @@ sealed class Screens(
     val title: String,
     val icon: ImageVector?
 ) {
-    data object Home : Screens(
+    data object News : Screens(
         route = "news",
         title = "News",
         icon = Icons.Outlined.Home
@@ -21,5 +21,11 @@ sealed class Screens(
         route = "favorites",
         title = "Favorites",
         icon = Icons.Outlined.FavoriteBorder
+    )
+
+    data object NewsDetail : Screens(
+        route = "newsDetails",
+        title = "News Details",
+        icon = null
     )
 }

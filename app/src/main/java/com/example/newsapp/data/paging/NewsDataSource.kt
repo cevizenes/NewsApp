@@ -20,7 +20,7 @@ class NewsDataSource(
             val pageNumber = params.key ?: 1
             val response = api.getNews(pageNumber)
             if (response.isSuccessful) {
-                val articles = response.body()?.articles ?: emptyList()
+                val articles = response.body()?.articles?.distinctBy { it.title } ?: emptyList()
 
                 LoadResult.Page(
                     data = articles,

@@ -24,11 +24,12 @@ import androidx.navigation.NavDestination
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import com.example.newsapp.ui.screen.NewsScreen
+import androidx.navigation.navArgument
 import com.example.newsapp.ui.screen.NewsScreenRoute
 import com.example.newsapp.ui.screen.Screens
 
@@ -51,7 +52,7 @@ fun Nav() {
 @Composable
 fun BottomBar(navController: NavHostController) {
     val appScreens = listOf(
-        Screens.Home,
+        Screens.News,
         Screens.Favorites
     )
 
@@ -77,8 +78,8 @@ fun NavGraph(navController: NavHostController) {
         navController = navController,
         startDestination = "news"
     ) {
-        composable(route = Screens.Home.route) {
-            NewsScreenRoute(navigateToDetail = {})
+        composable(route = Screens.News.route) {
+            NewsScreenRoute()
         }
         composable(route = Screens.Favorites.route) {
 

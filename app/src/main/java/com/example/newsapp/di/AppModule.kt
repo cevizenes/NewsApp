@@ -1,7 +1,7 @@
 package com.example.newsapp.di
 
 import com.example.newsapp.data.remote.api.ApiService
-import com.example.newsapp.utils.Constants.Companion.BASE_URL
+import com.example.newsapp.utils.Constants.BASE_URL
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

@@ -49,18 +49,14 @@ import com.example.newsapp.viewmodel.NewsViewModel
 @Composable
 fun NewsScreenRoute(
     viewModel: NewsViewModel = hiltViewModel(),
-    navigateToDetail: (String) -> Unit
 ) {
     val news = viewModel.getNews().collectAsLazyPagingItems()
-    NewsScreen(news = news, navigateToDetail = {
-        navigateToDetail.invoke(it)
-    })
+    NewsScreen(news = news)
 }
 
 @Composable
 internal fun NewsScreen(
     news: LazyPagingItems<Article>,
-    navigateToDetail: (String) -> Unit
 ) {
     Column(
         modifier = Modifier
@@ -78,7 +74,7 @@ internal fun NewsScreen(
             items(news.itemCount) { index ->
                 val item = news[index]
                 item?.let { new ->
-                    NewsItem(new)
+                    NewsItem(new = new)
                 }
                 if (index != 0 || index != news.itemCount) {
                     Divider(
@@ -186,41 +182,43 @@ fun SearchBar() {
 
 @Composable
 fun NewsItem(
-    news: Article?
+    new: Article?
 ) {
-    Row(modifier = Modifier.fillMaxWidth()) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth(),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.Center,
+    ) {
         Column(
             modifier = Modifier
                 .weight(1f)
         ) {
             Text(
-                text = news?.title ?: "",
+                text = new?.title ?: "",
                 style = MaterialTheme.typography.titleMedium,
                 fontSize = 14.sp,
                 fontWeight = FontWeight.Bold
             )
             Text(
-                text = news?.description ?: "",
+                text = new?.description ?: "",
                 fontSize = 12.sp,
                 maxLines = 2,
             )
 
         }
-        Box(
-            modifier = Modifier.fillMaxWidth()
-        ){
-            AsyncImage(
-                model = ImageRequest.Builder(LocalContext.current)
-                    .data(news?.urlToImage)
-                    .size(width = 250, height = 250)
-                    .crossfade(true)
-                    .build(),
-                contentDescription = "Image",
-                contentScale = ContentScale.Crop
-            )
-        }
 
+        AsyncImage(
+            model = ImageRequest.Builder(LocalContext.current)
+                .data(new?.urlToImage)
+                .size(width = 250, height = 250)
+                .crossfade(true)
+                .build(),
+            contentDescription = "Image",
+            contentScale = ContentScale.Crop
+        )
     }
+
 }
 
 
