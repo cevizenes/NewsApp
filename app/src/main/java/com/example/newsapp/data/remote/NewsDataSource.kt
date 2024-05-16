@@ -1,12 +1,12 @@
-package com.example.newsapp.data.paging
+package com.example.newsapp.data.remote
 
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
-import com.example.newsapp.data.model.Article
-import com.example.newsapp.data.remote.api.ApiService
+import com.example.newsapp.domain.model.Article
 
 class NewsDataSource(
-    private val api: ApiService
+    private val api: ApiService,
+    private val sources: String
 ) : PagingSource<Int, Article>() {
     override fun getRefreshKey(state: PagingState<Int, Article>): Int? {
         return state.anchorPosition?.let { position ->
@@ -18,7 +18,7 @@ class NewsDataSource(
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, Article> {
         return try {
             val pageNumber = params.key ?: 1
-            val response = api.getNews(pageNumber)
+            val response = api.getNews(pageNumber,sources)
             if (response.isSuccessful) {
                 val articles = response.body()?.articles?.distinctBy { it.title } ?: emptyList()
 

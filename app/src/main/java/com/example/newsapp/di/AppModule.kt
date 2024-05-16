@@ -1,6 +1,11 @@
 package com.example.newsapp.di
 
-import com.example.newsapp.data.remote.api.ApiService
+import android.app.Application
+import androidx.room.Room
+import com.example.newsapp.data.local.NewsDao
+import com.example.newsapp.data.local.NewsDatabase
+import com.example.newsapp.data.local.NewsTypeConvertor
+import com.example.newsapp.data.remote.ApiService
 import com.example.newsapp.utils.Constants.BASE_URL
 import dagger.Module
 import dagger.Provides
@@ -40,4 +45,24 @@ object AppModule {
     @Singleton
     fun provideMyApi(retrofit: Retrofit): ApiService =
         retrofit.create(ApiService::class.java)
+
+    @Provides
+    @Singleton
+    fun provideNewsDatabase(
+        application: Application
+    ): NewsDatabase {
+        return Room.databaseBuilder(
+            context = application,
+            klass = NewsDatabase::class.java,
+            name = "news_db"
+        ).addTypeConverter(NewsTypeConvertor())
+            .fallbackToDestructiveMigration()
+            .build()
+    }
+
+    @Provides
+    @Singleton
+    fun provideNewsDao(
+        newsDatabase: NewsDatabase
+    ): NewsDao = newsDatabase.newsDao
 }

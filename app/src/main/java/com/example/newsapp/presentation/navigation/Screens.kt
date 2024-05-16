@@ -1,4 +1,4 @@
-package com.example.newsapp.ui.screen
+package com.example.newsapp.presentation.navigation
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.FavoriteBorder
@@ -8,8 +8,8 @@ import androidx.compose.ui.graphics.vector.ImageVector
 
 sealed class Screens(
     val route: String,
-    val title: String,
-    val icon: ImageVector?
+    val title: String? = null,
+    val icon: ImageVector? = null
 ) {
     data object News : Screens(
         route = "news",
@@ -25,7 +25,13 @@ sealed class Screens(
 
     data object NewsDetail : Screens(
         route = "newsDetails",
-        title = "News Details",
-        icon = null
+    )
+
+    data object Search : Screens(
+        route = "search",
+    )
+
+    data object WebView : Screens(
+        route = "webView",
     )
 }

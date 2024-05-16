@@ -2,6 +2,8 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
     id("com.google.dagger.hilt.android")
+    id ("kotlin-parcelize")
+    id("com.google.devtools.ksp")
     id("kotlin-kapt")
 }
 
@@ -99,4 +101,5 @@ dependencies {
     //Navigation Compose
     implementation(libs.androidx.navigation.compose)
 
+    kapt(libs.androidx.room.compiler)
 }

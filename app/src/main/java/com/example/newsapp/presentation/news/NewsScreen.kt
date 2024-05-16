@@ -1,7 +1,8 @@
-package com.example.newsapp.ui.screen
+package com.example.newsapp.presentation.news
 
 import android.util.Log
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -14,7 +15,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.Search
@@ -23,6 +23,7 @@ import androidx.compose.material3.Divider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
@@ -43,27 +44,37 @@ import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
-import com.example.newsapp.data.model.Article
-import com.example.newsapp.viewmodel.NewsViewModel
+import com.example.newsapp.common.AppBar
+import com.example.newsapp.domain.model.Article
 
 @Composable
 fun NewsScreenRoute(
     viewModel: NewsViewModel = hiltViewModel(),
+    navigate: (String) -> Unit,
+    navigateToDetails: (Article) -> Unit
 ) {
-    val news = viewModel.getNews().collectAsLazyPagingItems()
-    NewsScreen(news = news)
+    val news = viewModel.news.collectAsLazyPagingItems()
+    NewsScreen(
+        news = news,
+        navigate = navigate,
+        navigateToDetails = navigateToDetails
+    )
 }
 
 @Composable
 internal fun NewsScreen(
     news: LazyPagingItems<Article>,
+    navigate: (String) -> Unit,
+    navigateToDetails: (Article) -> Unit
 ) {
+
+
     Column(
         modifier = Modifier
             .padding(start = 16.dp, top = 12.dp, bottom = 12.dp, end = 16.dp)
             .fillMaxWidth()
     ) {
-        AppBar()
+        AppBar(title = "Appcent NewsApp")
         SearchBar()
         LazyColumn(
             modifier = Modifier.fillMaxWidth(),
@@ -74,9 +85,12 @@ internal fun NewsScreen(
             items(news.itemCount) { index ->
                 val item = news[index]
                 item?.let { new ->
-                    NewsItem(new = new)
+                    NewsItem(
+                        new = new,
+                        onClick = navigateToDetails
+                    )
                 }
-                if (index != 0 || index != news.itemCount) {
+                if (index != 0) {
                     Divider(
                         modifier = Modifier
                             .fillMaxWidth()
@@ -122,23 +136,6 @@ internal fun NewsScreen(
     }
 }
 
-@Composable
-fun AppBar() {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(top = 16.dp, bottom = 16.dp),
-        horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Text(
-            modifier = Modifier.weight(1f),
-            text = "Appcent NewsApp",
-            style = MaterialTheme.typography.titleLarge,
-            textAlign = TextAlign.Center
-        )
-    }
-}
 
 @Composable
 fun SearchBar() {
@@ -182,11 +179,13 @@ fun SearchBar() {
 
 @Composable
 fun NewsItem(
-    new: Article?
+    new: Article,
+    onClick: (Article) -> Unit
 ) {
     Row(
         modifier = Modifier
-            .fillMaxWidth(),
+            .fillMaxWidth()
+            .clickable { onClick(new) },
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Center,
     ) {
@@ -195,13 +194,13 @@ fun NewsItem(
                 .weight(1f)
         ) {
             Text(
-                text = new?.title ?: "",
+                text = new.title,
                 style = MaterialTheme.typography.titleMedium,
                 fontSize = 14.sp,
                 fontWeight = FontWeight.Bold
             )
             Text(
-                text = new?.description ?: "",
+                text = new.description,
                 fontSize = 12.sp,
                 maxLines = 2,
             )
@@ -210,7 +209,7 @@ fun NewsItem(
 
         AsyncImage(
             model = ImageRequest.Builder(LocalContext.current)
-                .data(new?.urlToImage)
+                .data(new.urlToImage)
                 .size(width = 250, height = 250)
                 .crossfade(true)
                 .build(),
@@ -220,39 +219,3 @@ fun NewsItem(
     }
 
 }
-
-
-/*@Composable
-fun NewsItem(
-    news: Article?
-) {
-    Row(
-        modifier = Modifier.fillMaxWidth()
-    ) {
-        Column(
-            verticalArrangement = Arrangement.SpaceBetween
-        ) {
-            Text(
-                text = news?.title ?: "",
-                style = MaterialTheme.typography.titleMedium,
-                fontSize = 14.sp,
-                fontWeight = FontWeight.Bold
-            )
-            Text(
-                text = news?.description ?: "",
-                fontSize = 12.sp,
-                maxLines = 2,
-            )
-        }
-        AsyncImage(
-            model = ImageRequest.Builder(LocalContext.current)
-                .data(news?.urlToImage)
-                .crossfade(true)
-                .size(300, 300)
-                .build(),
-            contentDescription = "Image",
-            contentScale = ContentScale.FillBounds
-        )
-
-    }
-}*/
